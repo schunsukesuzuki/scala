@@ -8,7 +8,7 @@ object Main extends App{
   var i = readInt()    
     if(0 < i && i < 100) { 
       for ( j <- 1 to i ) {
-      print( " * " )
+      print( "*" )
       }
     }
     println("")
