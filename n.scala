@@ -1,5 +1,5 @@
-object Main extends App{
 import scala.io.StdIn.readLine
+object Main extends App{
   override def main(args: Array[String]): Unit = {
       marking
   }
