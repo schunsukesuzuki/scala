@@ -6,7 +6,7 @@ object Main extends App{
   def marking = {
   /* print (" plz enter number ") */
   var i = readInt()    
-    if(0 < i && i < 100) { 
+    if(1 < i && i < 101) { 
       for ( j <- 1 to i ) {
       print( "*" )
       }
