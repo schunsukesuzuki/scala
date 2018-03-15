@@ -1,16 +1,17 @@
-def orderedMergeSort[T <: Ordered[T]](xs: List[T]): List[T] = {
-  def merge(xs: List[T], ys: List[T]): List[T] =
-  (xs, ys) match { 
-    case (Nil, _) => ys
-    case (_, Nil) => xs
-    case (x :: xs1, y :: ys1) =>
-      if (x < y) x :: merge(xs1, ys)
-      else y :: merge(xs1, ys1)
-  }
-  val n = xs.length / 2
-  if (n == 0) xs
-  else {
-    val (ys, zs) =  xs splitAt n
-    merge (orderedMergeSort(ys),orderedMergeSort (zs))
-  }
+object Factor {
+   def main ( args: Array[String]){
+    var n = 1234567890
+    while (n % 2 == 0) {
+      print(2); print("")
+      n /= 2
+    }
+    var m = 3
+    while (m*m <=n) {
+      while (n % m == 0) {
+      print(m);print("")
+      n /=m
+    }
+    m +=2
+   }
+   if (n > 1) print(n)
 }
