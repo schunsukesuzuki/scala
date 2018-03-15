@@ -1,22 +1,16 @@
-class Queue[+T] private (
-  private [this] var leading: List[T],
-  private [this] var trailing: List[T]
-) {
-  private def mirror() =
-    if (leading.is Empty) {
-      while (!trailing.is Empty) {
-        leading = trailing.head :: leading
-        trailing = trailing.tail
-      }
-    }
-  def head: T = {
-    mirror()
-    leading.head
+def orderedMergeSort[T <: Ordered[T]](xs: List[T]): List[T] = {
+  def merge(xs: List[T], ys: List[T]): List[T] =
+  (xs, ys) match { 
+    case (Nil, _) => ys
+    case (_, Nil) => xs
+    case (x :: xs1, y :: ys1) =>
+      if (x < y) x :: merge(xs1, ys)
+      else y :: merge(xs1, ys1)
   }
-  def tail: Queue[T] = {
-    mirror()
-    new Queue(leading.tail, trailing)
+  val n = xs.length / 2
+  if (n == 0) xs
+  else {
+    val (ys, zs) =  xs splitAt n
+    merge (orderedMergeSort(ys),orderedMergeSort (zs))
   }
-  def enqueue[U >: T](x: U) =
-    new Queue[U] (leading,x :: trailing)
 }
