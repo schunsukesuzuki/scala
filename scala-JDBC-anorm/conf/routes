@@ -1,0 +1,1 @@
+GET     /language_list              controllers.HomeController.languageList

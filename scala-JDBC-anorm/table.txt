@@ -1,0 +1,7 @@
+////https://qiita.com/Yaruki00/items/ad61f1977571c399fdcd
+
+
+//id:Int(11)/auto_increment	name:text	experienece:Int(3)
+//1	Scala	0
+//2	Python	5
+//3	Swift	1
