@@ -3,7 +3,7 @@ def sort(xs: Array[Int]) {
     val t = xs(i); xs(i) = xs(j); xs(j) = t
   }
   def sort1(l: Int, r: Int) {
-    val pivot = xs((l +  r) / 2)
+    val pivot = xs((l + r) / 2)
     var i = l; var j = r
     while (i <= j) {
       while (xs(i) < pivot) i += 1
@@ -15,7 +15,7 @@ def sort(xs: Array[Int]) {
       }
     }
     if (l < j) sort1(l, j)
-    if (j < r) sort1(i, r)
+    if (i < r) sort1(i, r)
   }
   sort1(0, xs.length - 1)
 }
