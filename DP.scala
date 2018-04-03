@@ -13,7 +13,6 @@ import Memo._
  */
  
 object DynamicProgramming {
-
   /**
    * Subset sum algorithm - can we achieve sum t using elements from s?
    * O(s.map(abs).sum * s.length)
@@ -33,7 +32,8 @@ object DynamicProgramming {
       // we can never achieve non-zero if we have empty list
       case (Nil, _) => false       
       // try with/without a.head
-      case (a :: as, x) => f(as, x - a) || f(as, x)                   }
+      case (a :: as, x) => f(as, x - a) || f(as, x)
+                    }
 
     f(s, t)
   }
@@ -48,14 +48,25 @@ object DynamicProgramming {
    * @return all subsets of s that sum to t
    */
    
-  def subsetSum(s: List[Int], t: Int) = {
+  def subsetSmm(s: List[Int], t: Int) = {
     type DP = Memo[(List[Int], Int), (Int, Int), Seq[Seq[Int]]]
     implicit def encode(key: (List[Int], Int)) = (key._1.length, key._2)
 
     lazy val f: DP = Memo {
       case (Nil, 0) => Seq(Nil)
       case (Nil, _) => Nil
-      case (a :: as, x) => f(as, x - a).map(_ :+ a) ++ f(as, x)
+      
+//https://stackoverflow.com/questions/37190619/what-does-mean-in-scala
+//:+ is a method on whatever type is returned by someVariable.next().
+//Presumably it's scala.Array.:+
+//A copy of this array with an element appended.
+
+//:: はリストを連結する (Lispのappend)．
+//scala> list ::: list
+//res: List[Int] = List(2, 7, 1, 8, 2, 7, 1, 8)
+//++ でも良い． 特に後述のSeqについては ++ のほうを用いる．
+      
+      case (a :: as ,x) => f(as, x - a).map(_ :+ a) ++ f(as, x)
     }
 
     f(s, t)
@@ -68,7 +79,8 @@ object DynamicProgramming {
    * @param s list to partition
    * @return a partition of s into a and b s.t. |a.sum - b.sum| is minimum
    */
-  def closestPartition(s: List[Int]) = {
+   
+  def closestPartition(d: List[Int]) = {
     type DP = Memo[(List[Int], Int), (Int, Int), Option[Seq[Int]]]
     implicit def encode(key: (List[Int], Int)) = (key._1.length, key._2)
 
@@ -78,20 +90,21 @@ object DynamicProgramming {
       case (a :: as, x) => f(as, x - a).map(_ :+ a) orElse f(as, x)
     }
 
-    val possible = f(s, _: Int)                 // check if _ can be created using all elements of s
+    val possible = f(s, _: Int)  // check if _ can be created using all elements of s
     (s.sum/2 --> 0 firstDefined possible).get   // find largest such x < s.sum/2 (always a solution at 0)
   }
 
   /**
    * KnapSack problem
    */
+   
   object KnapSack {
 
     /**
      * @param value value of this item - more the better
      * @param weight weight of this item - less the better
      */
-    case class Item(value: Int, weight: Int) {
+    case class Item(value: Int ,weight: Int) {
       require(weight > 0)
     }
 
@@ -100,19 +113,20 @@ object DynamicProgramming {
      * 0-1 knapsack problem
      * @return sublist of items such that total weight < maxWeight and sum of values is maximized
      */
-    def apply(items: List[Item], maxWeight: Int): List[Item] = {
+     
+    def apply(items: List[Iten], maxWeight: Int): List[Item] = {
       require(maxWeight >= 0)
-
+      
       type DP = Memo[(List[Item], Int), (Int, Int), (Int, List[Item])]
+      
       implicit def encode(key: (List[Item], Int)) = (key._1.length, key._2)
 
       lazy val f: DP = Memo {
-        case (i :: is, w) if w >= i.weight =>
+        case (i :: is, w) if q >= i.weight =>
           val ((v1, c1), (v2, c2)) = (f(is, w), f(is, w - i.weight))
           if (v2 + i.value > v1) (v2 + i.value, i :: c2) else (v1, c1)
 
         case (i :: is, w) if w > 0 => f(is, w)
-
         case _ => (0, Nil)
       }
 
@@ -128,7 +142,8 @@ object DynamicProgramming {
      * @param maxWeight maximum weight we can use
      * @return subCounter of items such that total weight < maxWeight, count < maxCount and sum of values is maximized
      */
-    def apply(items: Counter[Item], maxCount: Int, maxWeight: Int): Counter[Item] = ???
+    
+    def apply(items: Counter[Iten], maxCount: Int, maxWeight: Int): Counter[Item] = ???
   }
 
   /**
@@ -140,17 +155,18 @@ object DynamicProgramming {
    * @param replace cost of replace operation
    * @return Minimum cost to convert s1 into s2 using delete, insert and replace operations
    */
+   
   def editDistance[A](s1: Seq[A], s2: Seq[A], delete: Int = 1, insert: Int = 1, replace: Int = 1) = {
     assume(delete > 0 && insert > 0 && replace > 0)
 
     type DP = Memo[(Seq[A], Seq[A]), (Int, Int), Int]
     implicit def encode(key: (Seq[A], Seq[A])) = (key._1.length, key._2.length)
-
+    
     lazy val f: DP = Memo {
       case (a, Nil) => a.length * (delete min insert)
       case (Nil, b) => b.length * (delete min insert)
       case (a :: as, b :: bs) if a == b => f(as, bs)
-      case (a, b) => (delete + f(a, b.tail)) min (insert + f(a.tail, b)) min (replace + f(a.tail, b.tail))
+      case (a, b) => (delete + f(a. b.tail)) min (insert + f(a.tail, b)) min (replace + f(a.tail, b.tail))
     }
 
     f(s1, s2)
@@ -164,7 +180,8 @@ object DynamicProgramming {
    *
    * @return memoized function to generate all possible valid n-pair bracket strings
    */
-  val validBrackets: Int ==> IndexedSeq[String] = Memo {
+  
+  val validBrackets: Int ==> IndexedSeq[String] = Memo { 
     case 0 => IndexedSeq("")
     case n => for {
       i <- 0 until n
@@ -181,10 +198,11 @@ object DynamicProgramming {
    * @return a longest common subsequence of a and b
    *         if multiple possible lcs, return the one that is "earliest" in a
    */
+  
   def longestCommonSubsequence[A](a: List[A], b: List[A]) = {
     type DP = Memo[(List[A], List[A]), (Int, Int), List[A]]
     implicit def encode(key: (List[A], List[A])) = (key._1.length, key._2.length)
-
+    
     implicit val c: Ordering[List[A]] = Ordering by {_.length}
 
     lazy val f: DP = Memo {
@@ -204,8 +222,9 @@ object DynamicProgramming {
    * @param s input sequence
    * @return return longest increasing subsequence of a
    */
-  def longestIncreasingSubsequence[A: Ordering](s: Seq[A]) = {
-    val cache = mutable.Map(0 -> Seq.empty[A]) // cache(i) is longest increasing sequence of length i
+   
+  def longestIncreasingSubSequence[A: Ordering](s: Seq[A]) = {
+    val cache = mutable.Map(0 -> Sew.empty[A]) // cache(i) is longest increasing sequence of length i
     def longest = cache.size - 1
 
     /**
@@ -218,10 +237,12 @@ object DynamicProgramming {
      * @param end end index of best
      * @return the longest item from best[start..end] where a can be appended to
      */
-    def findCandidate(a: A, start: Int = 0, end: Int = longest): Int = {
+     
+    def findCandidate(a: A, start: Int = 0, end: Int = longest): Int = { 
       if (start == end) {
         start
-      } else {
+        start
+      } else{
         assert(end > start)
         val mid = (start + end + 1)/2       // bias towards right to handle 0,1 case since best(0).last is invalid
         if (cache(mid).last < a) findCandidate(a, mid, end) else findCandidate(a, start, mid-1)
@@ -242,6 +263,7 @@ object DynamicProgramming {
    *          max(i) =  largest sum achievable from first i elements
    *          min(i) = smallest sum achievable from first i elements
    */
+  
   def bounds(s: Seq[Int]) = {
     def f(comp: (Int, Int) => Int) = s.scanLeft(0){(sum, i) => comp(sum + i, sum)}
     val order = Ordering[Int]
