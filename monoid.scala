@@ -1,5 +1,8 @@
+//https://github.com/debasishg/frdomain/blob/master/src/main/scala/frdomain/ch4/patterns/Monoid.scala
+
 package frdomain.ch4
 package patterns
+
 
 trait Monoid[T] {
   def zero: T
@@ -9,10 +12,10 @@ trait Monoid[T] {
 object Monoid {
 
   def apply[T](implicit monoid: Monoid[T]) = monoid
-  
-  implicit val IntAdditionMonoid = new Monoid[Int] {
+
+  implicit val IntAdditionMonoid = new Monoid[Int] {  
     val zero = 0
-    def op(i: Int, j: Int) = i + j
+    def op(i: Int, j: Int) = i + j 
   }
   
   implicit val BigDecimalAdditionMonoid = new Monoid[BigDecimal] {
